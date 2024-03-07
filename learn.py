@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import sklearn
+import sklearn.linear_model
 
 data = pd.read_csv('/Users/kamilnaja/projects/ml/homePrices/prices.csv')
 data['Cena'] = data['Cena'].str.replace(
@@ -8,15 +10,19 @@ data['Cena'] = data['Cena'].str.replace(' ', '').astype(int)
 
 
 data['Powierzchnia'] = data['Powierzchnia'].str.replace(
-    ',', '').astype(int)
-
-# pad 0 to right, if length is less than 4 for Powierzchnia
-data['Powierzchnia'] = data['Powierzchnia'].astype(str).str.pad(
+    ',', '').str.pad(
     width=4, side='right', fillchar='0')
+data['Powierzchnia'] = data['Powierzchnia'].astype(int)
 
-# sort by Powierzchnia
-data.sort_values(by='Powierzchnia', inplace=True)
 print(data.head())
-plt.scatter(data['Powierzchnia'], data['Cena'], color='red', marker='+')
-plt.xticks(rotation=90)
+
+data.plot(kind='scatter', y='Powierzchnia', x='Cena')
 plt.show()
+
+X = data[['Powierzchnia']]
+y = data['Cena']
+
+model = sklearn.linear_model.LinearRegression()
+model.fit(X, y)
+X_new = [[3000]]
+print(model.predict(X_new))
