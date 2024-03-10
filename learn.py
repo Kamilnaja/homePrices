@@ -3,33 +3,22 @@ import pandas as pd
 import sklearn
 import sklearn.linear_model
 
-data = pd.read_csv("prices.csv")
-data["Cena"] = data["Cena"].str.replace(",00 zł", "")
-data["Cena"] = data["Cena"].str.replace(" ", "").astype(int)
+df = pd.read_csv("prices.csv")
+print(df.size)
+df["Cena"] = df["Cena"].str.replace(",00 zł", "").str.replace(" ", "").astype(int)
+df["Powierzchnia"] = (df["Powierzchnia"].str.replace(",", ".")).astype(float)
 
+powierzchnia_median = df["Powierzchnia"].median()
+cena_median = df["Cena"].median()
 
-data["Powierzchnia"] = (
-    data["Powierzchnia"]
-    .str.replace(",", "")
-    .str.pad(width=4, side="right", fillchar="0")
-)
-data["Powierzchnia"] = data["Powierzchnia"].astype(int)
-
-powierzchnia_median = data["Powierzchnia"].median()
-cena_median = data["Cena"].median()
-
-print(powierzchnia_median, cena_median)
-print(data.head())
-
-X = data[["Powierzchnia"]]
-y = data["Cena"]
+X = df[["Powierzchnia"]]
+y = df["Cena"]
 
 model = sklearn.linear_model.LinearRegression()
 model.fit(X, y)
-X_new = [[2678.5]]
+X_new = [[26.5]]
 print(model.predict(X_new))
 
-# plot linear regression
 plt.scatter(X, y, color="black")
-plt.plot(X, model.predict(X), color="blue", linewidth=3)
+# plt.plot(X, model.predict(X), color="blue", linewidth=3)
 plt.show()
